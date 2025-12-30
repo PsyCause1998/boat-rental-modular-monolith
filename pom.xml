@@ -1,58 +1,77 @@
 <project>
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.example.boatrental</groupId>
-	<artifactId>boat-rental</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
+    <groupId>com.example.boatrental</groupId>
+    <artifactId>boat-rental</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-	<modules>
-		<module>application</module>
-		<module>boats</module>
-		<module>customers</module>
-		<module>rentals</module>
-		<module>shared</module>
-	</modules>
+    <modules>
+        <module>application</module>
+        <module>boats</module>
+        <module>customers</module>
+        <module>rentals</module>
+        <module>shared</module>
+    </modules>
 
-	<properties>
-		<java.version>21</java.version>
-		<spring.boot.version>3.5.9</spring.boot.version>
-	</properties>
+    <properties>
+        <java.version>21</java.version>
+        <spring.boot.version>3.5.9</spring.boot.version>
+        <junit.jupiter.version>5.10.2</junit.jupiter.version>
+    </properties>
 
-	<dependencyManagement>
-		<dependencies>
+    <dependencyManagement>
+        <dependencies>
 
-			<!-- BOM Spring Boot -->
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-dependencies</artifactId>
-				<version>${spring.boot.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
+            <!-- BOM Spring Boot -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 
-			<!-- Modules internes -->
-			<dependency>
-				<groupId>com.example.boatrental</groupId>
-				<artifactId>boats</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.example.boatrental</groupId>
-				<artifactId>customers</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.example.boatrental</groupId>
-				<artifactId>rentals</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.example.boatrental</groupId>
-				<artifactId>shared</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+            <!-- Modules internes -->
+            <dependency>
+                <groupId>com.example.boatrental</groupId>
+                <artifactId>boats</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.example.boatrental</groupId>
+                <artifactId>customers</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.example.boatrental</groupId>
+                <artifactId>rentals</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.example.boatrental</groupId>
+                <artifactId>shared</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
-		</dependencies>
-	</dependencyManagement>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.14.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
