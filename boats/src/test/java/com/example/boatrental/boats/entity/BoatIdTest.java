@@ -1,4 +1,4 @@
-package com.example.boatrental.boats.domain;
+package com.example.boatrental.boats.entity;
 
 import org.junit.jupiter.api.Test;
 
