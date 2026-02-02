@@ -1,12 +1,27 @@
-package com.example.boatrental.boats.domain;
+package com.example.boatrental.boats.entity;
 
+import jakarta.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "boats")
 public class Boat {
 
-    private final BoatId id;
+    @EmbeddedId
+    private BoatId id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private BoatStatus status;
+
+    /**
+     * Required by JPA
+     */
+    protected Boat() {
+    }
 
     public Boat(BoatId id, String name) {
         this.id = Objects.requireNonNull(id);

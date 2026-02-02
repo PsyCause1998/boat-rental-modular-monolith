@@ -1,8 +1,11 @@
-package com.example.boatrental.boats.domain;
+package com.example.boatrental.boats.entity;
 
+import jakarta.persistence.Embeddable;
+import java.io.Serializable;
 import java.util.UUID;
 
-public record BoatId(UUID value) {
+@Embeddable
+public record BoatId(UUID value) implements Serializable {
 
     public BoatId {
         if (value == null) {
@@ -14,4 +17,3 @@ public record BoatId(UUID value) {
         return new BoatId(UUID.randomUUID());
     }
 }
-
