@@ -1,16 +1,15 @@
 package com.example.boatrentals.customers.controller;
 
-import com.example.boatrentals.customers.controller.CustomerController;
 import com.example.boatrentals.customers.dto.CustomerRequest;
 import com.example.boatrentals.customers.dto.CustomerResponse;
 import com.example.boatrentals.customers.entity.Customer;
 import com.example.boatrentals.customers.entity.CustomerId;
+import com.example.boatrentals.customers.service.CustomerService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.example.boatrentals.customers.service.CustomerService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
