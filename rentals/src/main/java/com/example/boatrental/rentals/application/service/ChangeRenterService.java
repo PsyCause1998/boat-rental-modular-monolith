@@ -35,11 +35,13 @@ public class ChangeRenterService implements ChangeRenterUseCase {
                 .orElseThrow(() -> new RentalNotFoundException(command.rentalId()));
 
         // 2) change renter
-        Instant now = timeProvider.now();
         CustomerId newCustomerId = new CustomerId(command.newCustomerId());
-        if (customerExistencePort.exists(newCustomerId)) {
+        if (!customerExistencePort.exists(newCustomerId)) {
             throw new CustomerNotFoundException(command.newCustomerId());
         }
+
+        // 3) change renter (domain en charge de l’état ACTIVE, etc.)
+        Instant now = timeProvider.now();
         rental.changeRenter(newCustomerId, now);
 
         // 3) save changes
