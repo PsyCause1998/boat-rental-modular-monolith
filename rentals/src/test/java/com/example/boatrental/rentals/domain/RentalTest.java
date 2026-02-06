@@ -20,10 +20,10 @@ class RentalTest {
 
         Rental rental = Rental.create(id, boat, customer, now);
 
-        assertThat(rental.status()).isEqualTo(RentalStatus.CREATED);
-        assertThat(rental.id()).isEqualTo(id);
-        assertThat(rental.boat()).isEqualTo(boat);
-        assertThat(rental.customer()).isEqualTo(customer);
+        assertThat(rental.getStatus()).isEqualTo(RentalStatus.CREATED);
+        assertThat(rental.getId()).isEqualTo(id);
+        assertThat(rental.getBoatId()).isEqualTo(boat);
+        assertThat(rental.getCustomerId()).isEqualTo(customer);
         assertThat(rental.history()).hasSize(1);
         assertThat(rental.history().getFirst()).isInstanceOf(RentalEvent.RentalCreated.class);
     }
@@ -37,7 +37,7 @@ class RentalTest {
 
         rental.start(Instant.now());
 
-        assertThat(rental.status()).isEqualTo(RentalStatus.ACTIVE);
+        assertThat(rental.getStatus()).isEqualTo(RentalStatus.ACTIVE);
         assertThat(rental.history()).hasSize(2);
         assertThat(rental.history().getLast()).isInstanceOf(RentalEvent.RentalStarted.class);
     }
@@ -66,7 +66,7 @@ class RentalTest {
         CustomerId newCustomer = new CustomerId(UUID.randomUUID());
         rental.changeRenter(newCustomer, Instant.now());
 
-        assertThat(rental.customer()).isEqualTo(newCustomer);
+        assertThat(rental.getCustomerId()).isEqualTo(newCustomer);
         assertThat(rental.history()).hasSize(3);
         assertThat(rental.history().getLast()).isInstanceOf(RentalEvent.RenterChanged.class);
     }
@@ -93,7 +93,7 @@ class RentalTest {
 
         rental.finish(Instant.now());
 
-        assertThat(rental.status()).isEqualTo(RentalStatus.FINISHED);
+        assertThat(rental.getStatus()).isEqualTo(RentalStatus.FINISHED);
         assertThat(rental.history()).hasSize(3);
         assertThat(rental.history().getLast()).isInstanceOf(RentalEvent.RentalFinished.class);
     }

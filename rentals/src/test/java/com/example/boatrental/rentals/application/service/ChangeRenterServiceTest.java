@@ -63,7 +63,7 @@ class ChangeRenterServiceTest {
         service.changeRenter(new ChangeRenterCommand(rentalUuid, newCustomerUuid));
 
         // then
-        assertThat(rental.customer()).isEqualTo(newCustomerId);
+        assertThat(rental.getCustomerId()).isEqualTo(newCustomerId);
 
         verify(rentalRepository).findById(rentalId);
         verify(customerExistencePort).exists(newCustomerId);

@@ -4,7 +4,6 @@ import com.example.boatrental.rentals.application.dto.FinishRentalCommand;
 import com.example.boatrental.rentals.application.exception.RentalNotFoundException;
 import com.example.boatrental.rentals.application.port.out.RentalRepository;
 import com.example.boatrental.rentals.application.port.out.TimeProvider;
-import com.example.boatrental.rentals.application.service.FinishRentalService;
 import com.example.boatrental.rentals.domain.exception.InvalidRentalStateException;
 import com.example.boatrental.rentals.domain.model.BoatId;
 import com.example.boatrental.rentals.domain.model.CustomerId;
@@ -59,7 +58,7 @@ class FinishRentalServiceTest {
         service.finish(new FinishRentalCommand(rentalUuid));
 
         // then
-        assertThat(rental.status().name()).isEqualTo("FINISHED");
+        assertThat(rental.getStatus().name()).isEqualTo("FINISHED");
 
         verify(rentalRepository).findById(rentalId);
         verify(timeProvider).now();
