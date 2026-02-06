@@ -49,19 +49,19 @@ public class Rental {
         );
     }
 
-    public RentalId id() {
+    public RentalId getId() {
         return id;
     }
 
-    public BoatId boat() {
+    public BoatId getBoatId() {
         return boat;
     }
 
-    public CustomerId customer() {
+    public CustomerId getCustomerId() {
         return customer;
     }
 
-    public RentalStatus status() {
+    public RentalStatus getStatus() {
         return status;
     }
 
