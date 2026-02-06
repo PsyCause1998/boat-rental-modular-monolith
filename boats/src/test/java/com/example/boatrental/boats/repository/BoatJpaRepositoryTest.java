@@ -6,7 +6,12 @@ import com.example.boatrental.boats.entity.BoatStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -14,6 +19,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
+@Import(BoatJpaRepositoryTest.TestBootConfig.class)
 class BoatJpaRepositoryTest {
 
     @Autowired
@@ -64,4 +70,10 @@ class BoatJpaRepositoryTest {
         long count = boatJpaRepository.count();
         assertThat(count).isEqualTo(2);
     }
+
+    @SpringBootConfiguration
+    @EnableAutoConfiguration
+    @EntityScan("com.example.boatrental.boats.entity")
+    @EnableJpaRepositories("com.example.boatrental.boats.repository")
+    static class TestBootConfig { }
 }

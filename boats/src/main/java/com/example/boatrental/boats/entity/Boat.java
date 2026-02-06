@@ -8,6 +8,7 @@ import java.util.Objects;
 public class Boat {
 
     @EmbeddedId
+    @AttributeOverride(name = "value", column = @Column(name = "boat_id"))
     private BoatId id;
 
     @Column(nullable = false)
