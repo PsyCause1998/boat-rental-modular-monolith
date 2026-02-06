@@ -1,16 +1,15 @@
-package com.example.boatrental.boats.repository;
+package com.example.boatrental.boat_rental.boats.repository;
 
 import com.example.boatrental.boats.entity.Boat;
 import com.example.boatrental.boats.entity.BoatId;
 import com.example.boatrental.boats.entity.BoatStatus;
+import com.example.boatrental.boats.repository.BoatJpaRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.Optional;
@@ -19,8 +18,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Import(BoatJpaRepositoryTest.TestBootConfig.class)
-class BoatJpaRepositoryTest {
+class BoatJpaRepositoryIT {
 
     @Autowired
     private BoatJpaRepository boatJpaRepository;
@@ -49,16 +47,18 @@ class BoatJpaRepositoryTest {
         boat.markAsRented();
         boatJpaRepository.save(boat);
 
-        Optional<Boat> rentedBoat = boatJpaRepository.findById(boatId);
-        assertThat(rentedBoat).isPresent();
-        assertThat(rentedBoat.get().status()).isEqualTo(BoatStatus.RENTED);
+        assertThat(boatJpaRepository.findById(boatId))
+                .get()
+                .extracting(Boat::status)
+                .isEqualTo(BoatStatus.RENTED);
 
         boat.markAsAvailable();
         boatJpaRepository.save(boat);
 
-        Optional<Boat> availableBoat = boatJpaRepository.findById(boatId);
-        assertThat(availableBoat).isPresent();
-        assertThat(availableBoat.get().status()).isEqualTo(BoatStatus.AVAILABLE);
+        assertThat(boatJpaRepository.findById(boatId))
+                .get()
+                .extracting(Boat::status)
+                .isEqualTo(BoatStatus.AVAILABLE);
     }
 
     @Test
@@ -67,13 +67,12 @@ class BoatJpaRepositoryTest {
         boatJpaRepository.save(new Boat(new BoatId(UUID.randomUUID()), "Boat One"));
         boatJpaRepository.save(new Boat(new BoatId(UUID.randomUUID()), "Boat Two"));
 
-        long count = boatJpaRepository.count();
-        assertThat(count).isEqualTo(2);
+        assertThat(boatJpaRepository.count()).isEqualTo(2);
     }
 
-    @SpringBootConfiguration
-    @EnableAutoConfiguration
+    @Configuration
     @EntityScan("com.example.boatrental.boats.entity")
     @EnableJpaRepositories("com.example.boatrental.boats.repository")
-    static class TestBootConfig { }
+    static class TestConfig {
+    }
 }
