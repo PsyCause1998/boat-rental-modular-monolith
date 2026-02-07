@@ -1,5 +1,6 @@
 package com.example.boatrental;
 
+import jakarta.annotation.Resource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -11,7 +12,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import jakarta.annotation.Resource;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,24 +37,24 @@ class ActiveRentalUniqueIndexIT {
         jdbc.execute("DROP TABLE IF EXISTS rentals");
 
         jdbc.execute("""
-            CREATE TABLE rentals (
-              id UUID PRIMARY KEY,
-              boat_id UUID NOT NULL,
-              customer_id UUID NOT NULL,
-              status VARCHAR(32) NOT NULL
-            )
-        """);
+                    CREATE TABLE rentals (
+                      id UUID PRIMARY KEY,
+                      boat_id UUID NOT NULL,
+                      customer_id UUID NOT NULL,
+                      status VARCHAR(32) NOT NULL
+                    )
+                """);
 
         jdbc.execute("""
-            CREATE INDEX idx_rentals_boat_status
-            ON rentals (boat_id, status)
-        """);
+                    CREATE INDEX idx_rentals_boat_status
+                    ON rentals (boat_id, status)
+                """);
 
         jdbc.execute("""
-            CREATE UNIQUE INDEX uk_active_rental_per_boat
-            ON rentals (boat_id)
-            WHERE status = 'ACTIVE'
-        """);
+                    CREATE UNIQUE INDEX uk_active_rental_per_boat
+                    ON rentals (boat_id)
+                    WHERE status = 'ACTIVE'
+                """);
     }
 
     @Test
@@ -62,15 +62,15 @@ class ActiveRentalUniqueIndexIT {
         UUID boatId = UUID.randomUUID();
 
         jdbc.update("""
-            INSERT INTO rentals (id, boat_id, customer_id, status)
-            VALUES (?, ?, ?, 'ACTIVE')
-        """, UUID.randomUUID(), boatId, UUID.randomUUID());
+                    INSERT INTO rentals (id, boat_id, customer_id, status)
+                    VALUES (?, ?, ?, 'ACTIVE')
+                """, UUID.randomUUID(), boatId, UUID.randomUUID());
 
         assertThrows(DataIntegrityViolationException.class, () -> {
             jdbc.update("""
-                INSERT INTO rentals (id, boat_id, customer_id, status)
-                VALUES (?, ?, ?, 'ACTIVE')
-            """, UUID.randomUUID(), boatId, UUID.randomUUID());
+                        INSERT INTO rentals (id, boat_id, customer_id, status)
+                        VALUES (?, ?, ?, 'ACTIVE')
+                    """, UUID.randomUUID(), boatId, UUID.randomUUID());
         });
     }
 }

@@ -4,5 +4,5 @@ import java.util.UUID;
 
 public interface BoatLookup {
 
-    public boolean isAvailableForRental(UUID boatId);
+    boolean isAvailableForRental(UUID boatId);
 }

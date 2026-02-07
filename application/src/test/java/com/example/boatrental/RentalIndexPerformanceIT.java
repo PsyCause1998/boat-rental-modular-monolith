@@ -1,6 +1,10 @@
 package com.example.boatrental;
 
-import org.junit.jupiter.api.*;
+import jakarta.annotation.Resource;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,7 +14,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import jakarta.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -22,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * They are meant to:
  * - demonstrate the impact of indexes
  * - detect major performance regressions
- *
+ * <p>
  * Timing depends on machine load, Docker, CI, etc.
  * Keep thresholds generous.
  */
@@ -56,13 +59,13 @@ class RentalIndexPerformanceIT {
         jdbc.execute("DROP TABLE IF EXISTS rentals");
 
         jdbc.execute("""
-            CREATE TABLE rentals (
-              id UUID PRIMARY KEY,
-              boat_id UUID NOT NULL,
-              customer_id UUID NOT NULL,
-              status VARCHAR(32) NOT NULL
-            )
-        """);
+                    CREATE TABLE rentals (
+                      id UUID PRIMARY KEY,
+                      boat_id UUID NOT NULL,
+                      customer_id UUID NOT NULL,
+                      status VARCHAR(32) NOT NULL
+                    )
+                """);
 
         // Important : pas d’index ici, chaque test gère ses index
     }
@@ -91,9 +94,9 @@ class RentalIndexPerformanceIT {
 
         // 4) create index that matches the query predicate
         jdbc.execute("""
-            CREATE INDEX idx_rentals_boat_status
-            ON rentals (boat_id, status)
-        """);
+                    CREATE INDEX idx_rentals_boat_status
+                    ON rentals (boat_id, status)
+                """);
 
         // warmup after index
         countActiveForBoat(targetBoat);
@@ -114,9 +117,9 @@ class RentalIndexPerformanceIT {
 
         // 1) create index (sinon le test ne veut rien dire)
         jdbc.execute("""
-            CREATE INDEX idx_rentals_boat_status
-            ON rentals (boat_id, status)
-        """);
+                    CREATE INDEX idx_rentals_boat_status
+                    ON rentals (boat_id, status)
+                """);
 
         // 2) seed data
         seedFinishedRows(50_000); // moins que l’autre test pour limiter le temps global
@@ -137,18 +140,18 @@ class RentalIndexPerformanceIT {
 
     private Integer countActiveForBoat(UUID boatId) {
         Integer count = jdbc.queryForObject("""
-            SELECT COUNT(*)
-            FROM rentals
-            WHERE boat_id = ? AND status = 'ACTIVE'
-        """, Integer.class, boatId);
+                    SELECT COUNT(*)
+                    FROM rentals
+                    WHERE boat_id = ? AND status = 'ACTIVE'
+                """, Integer.class, boatId);
         return count == null ? 0 : count;
     }
 
     private void insertActiveForBoat(UUID boatId) {
         jdbc.update("""
-            INSERT INTO rentals (id, boat_id, customer_id, status)
-            VALUES (?, ?, ?, 'ACTIVE')
-        """, UUID.randomUUID(), boatId, UUID.randomUUID());
+                    INSERT INTO rentals (id, boat_id, customer_id, status)
+                    VALUES (?, ?, ?, 'ACTIVE')
+                """, UUID.randomUUID(), boatId, UUID.randomUUID());
     }
 
     private void seedFinishedRows(int rows) {
@@ -175,9 +178,9 @@ class RentalIndexPerformanceIT {
 
     private void flushBatch(List<Object[]> batch) {
         jdbc.batchUpdate("""
-            INSERT INTO rentals (id, boat_id, customer_id, status)
-            VALUES (?, ?, ?, ?)
-        """, batch);
+                    INSERT INTO rentals (id, boat_id, customer_id, status)
+                    VALUES (?, ?, ?, ?)
+                """, batch);
         batch.clear();
     }
 

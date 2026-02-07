@@ -3,7 +3,6 @@ package com.example.boatrental.boats.repository;
 import com.example.boatrental.boats.entity.Boat;
 import com.example.boatrental.boats.entity.BoatId;
 import com.example.boatrental.boats.entity.BoatStatus;
-import com.example.boatrental.boats.repository.BoatJpaRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
