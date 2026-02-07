@@ -36,7 +36,7 @@ public class ChangeRenterService implements ChangeRenterUseCase {
 
         // 2) change renter
         CustomerId newCustomerId = new CustomerId(command.newCustomerId());
-        if (!customerExistencePort.exists(newCustomerId)) {
+        if (!customerExistencePort.exists(newCustomerId.value())) {
             throw new CustomerNotFoundException(command.newCustomerId());
         }
 

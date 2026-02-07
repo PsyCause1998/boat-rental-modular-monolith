@@ -37,28 +37,28 @@ public class StartRentalService implements StartRentalUseCase {
 
     @Override
     public RentalId start(StartRentalCommand command) {
-        BoatId boat = new BoatId(command.boatId());
-        CustomerId customer = new CustomerId(command.customerId());
+        BoatId boatId = new BoatId(command.boatId());
+        CustomerId customerId = new CustomerId(command.customerId());
 
-        // 1) boat must be available
-        if (!boatAvailabilityPort.isAvailableForRental(boat)) {
+        // 1) boatId must be available
+        if (!boatAvailabilityPort.isAvailableForRental(boatId.value())) {
             throw new BoatNotAvailableException(command.boatId());
         }
 
-        // 2) enforce "one ACTIVE rental per boat"
-        if (rentalRepository.existsActiveRentalForBoat(boat)) {
+        // 2) enforce "one ACTIVE rental per boatId"
+        if (rentalRepository.existsActiveRentalForBoat(boatId)) {
             throw new ActiveRentalAlreadyExistsException(command.boatId());
         }
 
-        // 3) customer must exist
-        if (!customerExistencePort.exists(customer)) {
+        // 3) customerId must exist
+        if (!customerExistencePort.exists(customerId.value())) {
             throw new CustomerNotFoundException(command.customerId());
         }
 
         // 4) create aggregate
         Instant now = timeProvider.now();
         RentalId rentalId = RentalId.newId();
-        Rental rental = Rental.create(rentalId, boat, customer, now);
+        Rental rental = Rental.create(rentalId, boatId, customerId, now);
         rental.start(now);
 
         // 5) persist

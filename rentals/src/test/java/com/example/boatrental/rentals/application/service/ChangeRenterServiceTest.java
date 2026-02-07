@@ -13,24 +13,30 @@ import com.example.boatrental.rentals.domain.model.Rental;
 import com.example.boatrental.rentals.domain.model.RentalId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ChangeRenterServiceTest {
 
-    @Mock RentalRepository rentalRepository;
-    @Mock TimeProvider timeProvider;
-    @Mock CustomerExistencePort customerExistencePort;
+    @Mock
+    RentalRepository rentalRepository;
+    @Mock
+    TimeProvider timeProvider;
+    @Mock
+    CustomerExistencePort customerExistencePort;
 
-    @InjectMocks ChangeRenterService service;
+    @InjectMocks
+    ChangeRenterService service;
 
     @Test
     void should_change_renter_when_valid() {
@@ -55,7 +61,7 @@ class ChangeRenterServiceTest {
         rental.start(createdAt); // ACTIVE
 
         when(rentalRepository.findById(rentalId)).thenReturn(Optional.of(rental));
-        when(customerExistencePort.exists(newCustomerId)).thenReturn(true);
+        when(customerExistencePort.exists(newCustomerId.value())).thenReturn(true);
         when(timeProvider.now()).thenReturn(changeAt);
         when(rentalRepository.save(any(Rental.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -66,7 +72,7 @@ class ChangeRenterServiceTest {
         assertThat(rental.getCustomerId()).isEqualTo(newCustomerId);
 
         verify(rentalRepository).findById(rentalId);
-        verify(customerExistencePort).exists(newCustomerId);
+        verify(customerExistencePort).exists(newCustomerId.value());
         verify(timeProvider).now();
         verify(rentalRepository).save(rental);
 
@@ -113,7 +119,7 @@ class ChangeRenterServiceTest {
         rental.start(Instant.parse("2026-01-01T10:00:00Z")); // ACTIVE
 
         when(rentalRepository.findById(rentalId)).thenReturn(Optional.of(rental));
-        when(customerExistencePort.exists(newCustomerId)).thenReturn(false);
+        when(customerExistencePort.exists(newCustomerId.value())).thenReturn(false);
 
         // when / then
         assertThatThrownBy(() -> service.changeRenter(new ChangeRenterCommand(rentalUuid, newCustomerUuid)))
@@ -121,7 +127,7 @@ class ChangeRenterServiceTest {
                 .hasMessageContaining(newCustomerUuid.toString());
 
         verify(rentalRepository).findById(rentalId);
-        verify(customerExistencePort).exists(newCustomerId);
+        verify(customerExistencePort).exists(newCustomerId.value());
         verifyNoInteractions(timeProvider);
         verify(rentalRepository, never()).save(any());
         verifyNoMoreInteractions(rentalRepository, customerExistencePort);
@@ -147,7 +153,7 @@ class ChangeRenterServiceTest {
         // NOTE: not started => CREATED (not ACTIVE)
 
         when(rentalRepository.findById(rentalId)).thenReturn(Optional.of(rental));
-        when(customerExistencePort.exists(newCustomerId)).thenReturn(true);
+        when(customerExistencePort.exists(newCustomerId.value())).thenReturn(true);
         when(timeProvider.now()).thenReturn(Instant.parse("2026-01-01T10:30:00Z"));
 
         // when / then
@@ -155,7 +161,7 @@ class ChangeRenterServiceTest {
                 .isInstanceOf(InvalidRentalStateException.class);
 
         verify(rentalRepository).findById(rentalId);
-        verify(customerExistencePort).exists(newCustomerId);
+        verify(customerExistencePort).exists(newCustomerId.value());
         verify(timeProvider).now();
         verify(rentalRepository, never()).save(any());
         verifyNoMoreInteractions(rentalRepository, customerExistencePort, timeProvider);
